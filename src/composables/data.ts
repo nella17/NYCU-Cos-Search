@@ -1,7 +1,7 @@
 interface Dep {
     label: string
     value: string
-    children: Dep[]
+    children?: Dep[]
 }
 
 export const useDataStore = defineStore('data', () => {
@@ -56,29 +56,29 @@ export const useDataStore = defineStore('data', () => {
             .then((res) => res.token)
         await fetchDataNocache('/sysstatuslvl')
         await Promise.allSettled([
-            getdep(),
+            get_dep(),
         ])
     }
     setup()
 
     const deps = ref<Dep[]>([])
-    const depMap = new Map<string, string[]>()
+    const depMap = new Map<string, Dep[]>()
 
-    async function getdep() {
+    async function get_dep() {
         const data = (await fetchData('/getdep')) as Dep[]
         deps.value = data
         depMap.clear()
-        deps.value.forEach((dep) => parseDep(dep))
+        deps.value.forEach((dep) => parse_dep(dep))
     }
 
-    function parseDep(dep: Dep, path: string[] = []) {
-        path = [...path, dep.label]
-        if (isUUID(dep.value)) {
-            depMap.set(dep.value, path)
+    function parse_dep({ value, label, children }: Dep, path: Dep[] = []) {
+        path = [...path, { value, label }]
+        if (isUUID(value)) {
+            depMap.set(value, path)
         }
-        if (dep.children) {
-            dep.children.forEach((child) => {
-                parseDep(child, path)
+        if (children) {
+            children.forEach((child) => {
+                parse_dep(child, path)
             })
         }
     }
