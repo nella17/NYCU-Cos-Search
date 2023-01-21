@@ -63,6 +63,7 @@ export const useDataStore = defineStore('data', () => {
 
     function checkToken() {
         if (!token) {
+            chrome.storage.local.set({ visible: false })
             if (confirm('Token not found, reload page?')) {
                 location.reload()
             }
@@ -163,12 +164,15 @@ export const useDataStore = defineStore('data', () => {
             .sendMessage({ action: 'getToken' })
             .then((res) => res.token)
         await fetchDataNocache('/sysstatuslvl')
-        const promises = [
-            get_dep()
-        ]
+        await get_dep()
+        const promises = []
         for (const [dep_uid, dep_path] of depMap.entries())
             promises.push(get_preregistcourse(dep_uid, dep_path))
-        await Promise.allSettled(promises)
+        await Promise.allSettled(promises).then((res) => {
+            res.filter((p) => p.status !== 'fulfilled').forEach((p) => {
+                console.error('setup Promise.allSettled', p)
+            })
+        })
     }
 
     return {
