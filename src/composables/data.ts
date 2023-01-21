@@ -36,7 +36,8 @@ export const useDataStore = defineStore('data', () => {
             })
             .catch((err) => {
                 console.error('getData', err)
-                alert(`getData ${path}: ${err.message}`)
+                // TODO: show error message in popup
+                // alert(`getData ${path}: ${err.message}`)
                 throw err
             })
     }
