@@ -1,10 +1,40 @@
 <script lang="ts" setup>
-interface Props {
-    visible: boolean
+import { onMounted, ref } from 'vue'
+
+const visible = ref(false)
+
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.toggleVisible) {
+        visible.value = !visible.value
+    }
+})
+
+function get(path: string, body: Record<string, string>) {
+    return fetch(path, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(body),
+    })
 }
 
-const props = withDefaults(defineProps<Props>(), {
-    visible: false,
+onMounted(async () => {
+    const { token } = await chrome.runtime.sendMessage({ action: 'getToken' })
+    if (!token) {
+        if (confirm('Token not found, reload page?')) {
+            location.reload()
+        }
+    } else {
+        console.log('Token:', token)
+        get('/sysstatuslvl', { token })
+            .then((resp) => resp.json())
+            .then((resp) => console.log(resp))
+
+        get('/getpreregist', { token })
+            .then((resp) => resp.json())
+            .then((resp) => console.log(resp))
+    }
 })
 </script>
 
