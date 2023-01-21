@@ -18,6 +18,9 @@ function toggleVisible() {
 }
 
 const dataStore = useDataStore()
+onMounted(() => {
+    dataStore.setup()
+})
 </script>
 
 <template>

@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener((message) => {
 </script>
 
 <template>
-    <PopUp v-show="visible" v-model:visible="visible" />
+    <PopUp v-if="visible" v-model:visible="visible" />
     <Teleport to=".navbar-end">
         <a class="navbar-item" @click.prevent="toggleVisible">🔍</a>
     </Teleport>

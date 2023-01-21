@@ -55,17 +55,6 @@ export const useDataStore = defineStore('data', () => {
         return data
     }
 
-    async function setup() {
-        token = await chrome.runtime
-            .sendMessage({ action: 'getToken' })
-            .then((res) => res.token)
-        await fetchDataNocache('/sysstatuslvl')
-        await Promise.allSettled([
-            get_dep(),
-        ])
-    }
-    setup()
-
     const deps = ref<Dep[]>([])
     const depMap = new Map<string, Dep[]>()
 
@@ -88,8 +77,17 @@ export const useDataStore = defineStore('data', () => {
         }
     }
 
+    async function setup() {
+        token = await chrome.runtime
+            .sendMessage({ action: 'getToken' })
+            .then((res) => res.token)
+        await fetchDataNocache('/sysstatuslvl')
+        await Promise.allSettled([get_dep()])
+    }
+
     return {
         deps,
         depMap,
+        setup,
     }
 })
