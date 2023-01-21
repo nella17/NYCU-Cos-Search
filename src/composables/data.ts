@@ -4,6 +4,8 @@ interface Dep {
     children?: Dep[]
 }
 
+type DepPath = Dep[]
+
 export const useDataStore = defineStore('data', () => {
     let token = ''
 
@@ -47,17 +49,22 @@ export const useDataStore = defineStore('data', () => {
         const saved = await chrome.storage.local.get(key)
         if (saved[key]) {
             const { time, data } = saved[key]
-            if (new Date().getTime() - new Date(time).getTime() < 24 * 60 * 60 * 1000) {
+            if (
+                new Date().getTime() - new Date(time).getTime() <
+                24 * 60 * 60 * 1000
+            ) {
                 return data
             }
         }
         const data = await fetchDataNocache(path, body)
-        chrome.storage.local.set({ [key]: { data, time: new Date().getTime() } })
+        chrome.storage.local.set({
+            [key]: { data, time: new Date().getTime() },
+        })
         return data
     }
 
     const deps = ref<Dep[]>([])
-    const depMap = new Map<string, Dep[]>()
+    const depMap = new Map<string, DepPath>()
 
     async function get_dep() {
         const data = (await fetchData('/getdep')) as Dep[]
@@ -66,7 +73,7 @@ export const useDataStore = defineStore('data', () => {
         deps.value.forEach((dep) => parse_dep(dep))
     }
 
-    function parse_dep({ value, label, children }: Dep, path: Dep[] = []) {
+    function parse_dep({ value, label, children }: Dep, path: DepPath = []) {
         path = [...path, { value, label }]
         if (isUUID(value)) {
             depMap.set(value, path)
