@@ -1,3 +1,9 @@
+interface Dep {
+    label: string
+    value: string
+    children: Dep[]
+}
+
 export const useDataStore = defineStore('data', () => {
     let token = ''
 
@@ -10,7 +16,7 @@ export const useDataStore = defineStore('data', () => {
         }
     }
 
-    function getData(path: string, body: Record<string, string> = {}) {
+    function fetchData(path: string, body: Record<string, string> = {}) {
         checkToken()
         return fetch(path, {
             method: 'POST',
@@ -39,11 +45,36 @@ export const useDataStore = defineStore('data', () => {
         token = await chrome.runtime
             .sendMessage({ action: 'getToken' })
             .then((res) => res.token)
-        console.log('token', token)
-        const res = await getData('/sysstatuslvl')
-        console.log('res', res)
+        await fetchData('/sysstatuslvl')
+        await Promise.allSettled([
+            getdep(),
+        ])
     }
     setup()
 
-    return {}
+    const deps = ref<Dep[]>([])
+    const depMap = new Map<string, string[]>()
+
+    async function getdep() {
+        const data = await fetchData('/getdep') as Dep[]
+        deps.value = data
+        data.forEach((dep) => parseDep(dep))
+    }
+
+    function parseDep(dep: Dep, path: string[] = []) {
+        path = [...path, dep.label]
+        if (isUUID(dep.value)) {
+            depMap.set(dep.value, path)
+        }
+        if (dep.children) {
+            dep.children.forEach((child) => {
+                parseDep(child, path)
+            })
+        }
+    }
+
+    return {
+        deps,
+        depMap,
+    }
 })
