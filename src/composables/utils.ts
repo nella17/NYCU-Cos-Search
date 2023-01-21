@@ -1,4 +1,4 @@
-function getData(path: string, body: Record<string, string>) {
+export function getData(path: string, body: Record<string, string>) {
     return fetch(path, {
         method: 'POST',
         headers: {

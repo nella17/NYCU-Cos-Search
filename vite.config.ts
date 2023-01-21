@@ -15,7 +15,7 @@ export default defineConfig({
     },
     build: {
         rollupOptions: {
-            input: 'src/manifest.json',
+            input: './src/manifest.json',
         },
     },
     plugins: [
@@ -30,14 +30,17 @@ export default defineConfig({
             imports: [
                 'vue', //
             ],
+            dirs: [
+                './src/composables',
+            ],
             dts: 'include/auto-imports.d.ts',
         }),
         Components({
             directoryAsNamespace: true,
-            dirs: ['src/components'],
+            dirs: ['./src/components'],
             extensions: ['vue'],
             include: [/\.vue$/, /\.vue\?vue/],
-            dts: 'include/components.d.ts',
+            dts: './include/components.d.ts',
         }),
         chromeExtension() as any,
         ViteCSSinJS(),
