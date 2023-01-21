@@ -4,6 +4,9 @@
     "version": "1.0",
     "permissions": ["webRequest"],
     "host_permissions": ["https://cos.nycu.edu.tw/*"],
+    "action": {
+        "default_title": "Vue Popup"
+    },
     "background": {
         "matches": ["https://cos.nycu.edu.tw/*"],
         "service_worker": "background.ts"

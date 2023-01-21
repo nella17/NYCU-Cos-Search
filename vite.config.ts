@@ -2,6 +2,7 @@ import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { chromeExtension } from 'vite-plugin-chrome-extension'
+import ViteCSSinJS from './build/ViteCSSinJS'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,5 +16,9 @@ export default defineConfig({
             input: 'src/manifest.json',
         },
     },
-    plugins: [vue(), chromeExtension()],
+    plugins: [
+        vue(),
+        chromeExtension() as any,
+        ViteCSSinJS(),
+    ],
 })
