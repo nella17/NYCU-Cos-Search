@@ -16,7 +16,7 @@ export const useDataStore = defineStore('data', () => {
         }
     }
 
-    function fetchData(path: string, body: Record<string, string> = {}) {
+    function fetchDataNocache(path: string, body: Record<string, string> = {}) {
         checkToken()
         return fetch(path, {
             method: 'POST',
@@ -41,11 +41,20 @@ export const useDataStore = defineStore('data', () => {
             })
     }
 
+    async function fetchData(path: string, body: Record<string, string> = {}) {
+        const key = `${path}?${new URLSearchParams(body).toString()}`
+        const saved = await chrome.storage.session.get(key)
+        if (saved[key]) return saved[key]
+        const data = await fetchDataNocache(path, body)
+        chrome.storage.session.set({ [key]: data })
+        return data
+    }
+
     async function setup() {
         token = await chrome.runtime
             .sendMessage({ action: 'getToken' })
             .then((res) => res.token)
-        await fetchData('/sysstatuslvl')
+        await fetchDataNocache('/sysstatuslvl')
         await Promise.allSettled([
             getdep(),
         ])
@@ -56,9 +65,10 @@ export const useDataStore = defineStore('data', () => {
     const depMap = new Map<string, string[]>()
 
     async function getdep() {
-        const data = await fetchData('/getdep') as Dep[]
+        const data = (await fetchData('/getdep')) as Dep[]
         deps.value = data
-        data.forEach((dep) => parseDep(dep))
+        depMap.clear()
+        deps.value.forEach((dep) => parseDep(dep))
     }
 
     function parseDep(dep: Dep, path: string[] = []) {

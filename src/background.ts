@@ -1,5 +1,7 @@
 let token = null as string | null
 
+chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' })
+
 chrome.action.onClicked.addListener((tab) => {
     if (tab.id) {
         chrome.tabs.sendMessage(tab.id, { toggleVisible: true })

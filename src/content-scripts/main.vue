@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const visible = ref(false)
 
-chrome.storage.local.get(['visible']).then((result) => {
+chrome.storage.local.get('visible').then((result) => {
     visible.value = result.visible
 })
 
