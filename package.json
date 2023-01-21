@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "fswatch -o src | xargs -n1 -I{} vite build --mode developmemnt",
+    "dev": "fswatch -o src | xargs -n1 -I{} pnpm run build:dev",
+    "build:dev": "NODE_ENV=developmemnt vite build --mode developmemnt",
     "build": "vite build"
   },
   "repository": {
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/nella17/NYCU-Cos-Search#readme",
   "devDependencies": {
     "@types/chrome": "^0.0.209",
+    "@types/node": "^18.11.18",
     "@vitejs/plugin-vue": "^4.0.0",
     "pinia": "^2.0.29",
     "typescript": "^4.9.4",

@@ -14,7 +14,7 @@ export default defineConfig({
         },
     },
     build: {
-        minify: false,
+        minify: process.env.NODE_ENV === 'production' ? 'esbuild' : false,
         rollupOptions: {
             input: './src/manifest.json',
         },
