@@ -10,8 +10,9 @@ chrome.webRequest.onBeforeRequest.addListener(
     (details) => {
         if (token) return
         const data = details.requestBody?.formData
-        if (!data) return
-        token = data.token[0]
+        if (data && data.token && data.token[0]) {
+            token = data.token[0]
+        }
     },
     {
         urls: ['https://cos.nycu.edu.tw/*'],
