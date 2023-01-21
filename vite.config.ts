@@ -3,8 +3,9 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
+import vuetify from 'vite-plugin-vuetify'
 import { chromeExtension } from 'vite-plugin-chrome-extension'
-import ViteCSSinJS from './build/ViteCSSinJS'
+import ViteCSSinJS from './plugins/ViteCSSinJS'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -44,6 +45,7 @@ export default defineConfig({
             include: [/\.vue$/, /\.vue\?vue/],
             dts: './include/components.d.ts',
         }),
+        vuetify(),
         chromeExtension() as any,
         ViteCSSinJS(),
     ],
