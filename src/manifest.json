@@ -2,8 +2,12 @@
     "manifest_version": 3,
     "name": "NYCU Cos Search",
     "version": "1.0",
-    "permissions": ["webRequest"],
-    "host_permissions": ["https://cos.nycu.edu.tw/*"],
+    "permissions": [
+        "webRequest"
+    ],
+    "host_permissions": [
+        "https://cos.nycu.edu.tw/*"
+    ],
     "action": {
         "default_title": "Vue Popup"
     },
