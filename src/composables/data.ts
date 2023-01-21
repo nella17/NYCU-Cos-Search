@@ -42,7 +42,7 @@ export const useDataStore = defineStore('data', () => {
     }
 
     async function fetchData(path: string, body: Record<string, string> = {}) {
-        const key = `${path}?${digestMessage(body)}`
+        const key = `${path}?${await digestMessage(body)}`
         const saved = await chrome.storage.local.get(key)
         if (saved[key]) {
             const { time, data } = saved[key]

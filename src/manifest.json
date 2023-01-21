@@ -4,7 +4,8 @@
     "version": "1.0",
     "permissions": [
         "webRequest",
-        "storage"
+        "storage",
+        "unlimitedStorage"
     ],
     "host_permissions": [
         "https://cos.nycu.edu.tw/*"
