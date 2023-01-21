@@ -17,23 +17,7 @@ function toggleVisible() {
     emit('update:visible', !props.visible)
 }
 
-onMounted(async () => {
-    const { token } = await chrome.runtime.sendMessage({ action: 'getToken' })
-    if (!token) {
-        if (confirm('Token not found, reload page?')) {
-            location.reload()
-        }
-    } else {
-        console.log('Token:', token)
-        getData('/sysstatuslvl', { token })
-            .then((resp) => resp.json())
-            .then((resp) => console.log(resp))
-
-        getData('/getpreregist', { token })
-            .then((resp) => resp.json())
-            .then((resp) => console.log(resp))
-    }
-})
+const dataStore = useDataStore()
 </script>
 
 <template>

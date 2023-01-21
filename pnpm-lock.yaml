@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@types/chrome': ^0.0.209
   '@vitejs/plugin-vue': ^4.0.0
+  pinia: ^2.0.29
   typescript: ^4.9.4
   unplugin-auto-import: ^0.12.1
   unplugin-vue-components: ^0.22.12
@@ -14,6 +15,7 @@ specifiers:
 devDependencies:
   '@types/chrome': 0.0.209
   '@vitejs/plugin-vue': 4.0.0_vite@4.0.4+vue@3.2.45
+  pinia: 2.0.29_prq2uz4lho2pwp6irk4cfkrxwu
   typescript: 4.9.4
   unplugin-auto-import: 0.12.1
   unplugin-vue-components: 0.22.12_vue@3.2.45
@@ -432,6 +434,10 @@ packages:
     dependencies:
       '@vue/compiler-dom': 3.2.45
       '@vue/shared': 3.2.45
+    dev: true
+
+  /@vue/devtools-api/6.5.0:
+    resolution: {integrity: sha512-o9KfBeaBmCKl10usN4crU53fYtC1r7jJwdGKjPT24t348rHxgfpZ0xL3Xm/gLUYnc0oTp8LAmrxOeLyu6tbk2Q==}
     dev: true
 
   /@vue/reactivity-transform/3.2.45:
@@ -1353,6 +1359,24 @@ packages:
     engines: {node: '>=8.6'}
     dev: true
 
+  /pinia/2.0.29_prq2uz4lho2pwp6irk4cfkrxwu:
+    resolution: {integrity: sha512-5z/KpFecq/cIgfeTnulJXldiLcTITRkTe3N58RKYSj0Pc1EdR6oyCdnf5A9jLoVwBqX5LtHhd0kGlpzWvk9oiQ==}
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@vue/devtools-api': 6.5.0
+      typescript: 4.9.4
+      vue: 3.2.45
+      vue-demi: 0.13.11_vue@3.2.45
+    dev: true
+
   /pkg-types/1.0.1:
     resolution: {integrity: sha512-jHv9HB+Ho7dj6ItwppRDDl0iZRYBD0jsakHXtFgoLr+cHSF6xC+QL54sJmWxyGxOLYSHm0afhXhXcQDQqH9z8g==}
     dependencies:
@@ -1678,6 +1702,21 @@ packages:
       rollup: 3.10.1
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
+
+  /vue-demi/0.13.11_vue@3.2.45:
+    resolution: {integrity: sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==}
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: 3.2.45
     dev: true
 
   /vue-template-compiler/2.7.14:

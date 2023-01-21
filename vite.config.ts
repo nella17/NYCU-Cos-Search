@@ -14,6 +14,7 @@ export default defineConfig({
         },
     },
     build: {
+        minify: false,
         rollupOptions: {
             input: './src/manifest.json',
         },
@@ -29,6 +30,7 @@ export default defineConfig({
             ],
             imports: [
                 'vue', //
+                'pinia',
             ],
             dirs: [
                 './src/composables',
