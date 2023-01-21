@@ -163,8 +163,9 @@ export const useDataStore = defineStore('data', () => {
             .sendMessage({ action: 'getToken' })
             .then((res) => res.token)
         await fetchDataNocache('/sysstatuslvl')
-        await Promise.allSettled([get_dep()])
-        const promises = []
+        const promises = [
+            get_dep()
+        ]
         for (const [dep_uid, dep_path] of depMap.entries())
             promises.push(get_preregistcourse(dep_uid, dep_path))
         await Promise.allSettled(promises)
