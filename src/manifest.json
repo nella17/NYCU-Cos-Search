@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "NYCU Cos Search",
+    "version": "1.0",
+    "permissions": ["webRequest"],
+    "host_permissions": ["https://cos.nycu.edu.tw/*"],
+    "background": {
+        "matches": ["https://cos.nycu.edu.tw/*"],
+        "service_worker": "background.ts"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://cos.nycu.edu.tw/*"],
+            "js": ["content-scripts/main.ts"]
+        }
+    ]
+}
