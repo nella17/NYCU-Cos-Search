@@ -1,12 +1,20 @@
 <script lang="ts" setup>
-function get(path: string, body: Record<string, string>) {
-    return fetch(path, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(body),
-    })
+interface Props {
+    visible?: boolean
+}
+
+interface Emits {
+    (event: 'update:visible', value: boolean): void
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    visible: true,
+})
+
+const emit = defineEmits<Emits>()
+
+function toggleVisible() {
+    emit('update:visible', !props.visible)
 }
 
 onMounted(async () => {
@@ -17,11 +25,11 @@ onMounted(async () => {
         }
     } else {
         console.log('Token:', token)
-        get('/sysstatuslvl', { token })
+        getData('/sysstatuslvl', { token })
             .then((resp) => resp.json())
             .then((resp) => console.log(resp))
 
-        get('/getpreregist', { token })
+        getData('/getpreregist', { token })
             .then((resp) => resp.json())
             .then((resp) => console.log(resp))
     }
@@ -29,35 +37,39 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="ce-mask">
-        <div class="ce-popup">
-            <div class="ce-popup-content">
-                Hello, Vite-Plugin-Chrome-Extension
-            </div>
+    <div class="popup">
+        <button class="close" @click.stop="toggleVisible">X</button>
+        <div class="content">
+            Hello, Vite-Plugin-Chrome-Extension
         </div>
     </div>
 </template>
 
-<style>
-.ce-mask {
+<style scoped>
+.popup {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 99999;
-}
-.ce-popup {
-    position: absolute;
     top: 20px;
     right: 20px;
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 1px 10px 0 rgb(0 0 0 / 50%);
+    box-shadow: 0 1px 5px 0 rgb(0 0 0 / 50%);
+    z-index: 999;
 }
-.ce-popup-content {
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.5rem;
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
+    cursor: pointer;
+    transform: translate(10%, -10%);
+}
+.content {
     font-size: 1.5em;
     font-weight: 700;
     color: deepskyblue;

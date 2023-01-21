@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 const visible = ref(true)
 
+function toggleVisible() {
+    visible.value = !visible.value
+}
+
 chrome.runtime.onMessage.addListener((message) => {
-    if (message.toggleVisible) {
-        visible.value = !visible.value
-    }
+    if (message.toggleVisible) toggleVisible()
 })
 </script>
 
 <template>
-    <div v-show="visible">
-        <PopUp />
-    </div>
+    <PopUp v-show="visible" v-model:visible="visible" />
+    <Teleport to=".navbar-end">
+        <a class="navbar-item" @click.prevent="toggleVisible">🔍</a>
+    </Teleport>
 </template>
