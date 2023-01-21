@@ -14,15 +14,16 @@
         "forceConsistentCasingInFileNames": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["src/*"],
         }
     },
     "include": [
+        "include/**/*.d.ts",
         "src/**/*.ts",
         "src/**/*.d.ts",
         "src/**/*.ts",
         "src/**/*.d.ts",
         "src/**/*.tsx",
-        "src/**/*.vue"
+        "src/**/*.vue",
     ]
 }

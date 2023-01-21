@@ -1,14 +1,4 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
-
-const visible = ref(false)
-
-chrome.runtime.onMessage.addListener((message) => {
-    if (message.toggleVisible) {
-        visible.value = !visible.value
-    }
-})
-
 function get(path: string, body: Record<string, string>) {
     return fetch(path, {
         method: 'POST',
@@ -39,7 +29,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div v-show="visible" class="ce-mask">
+    <div class="ce-mask">
         <div class="ce-popup">
             <div class="ce-popup-content">
                 Hello, Vite-Plugin-Chrome-Extension
