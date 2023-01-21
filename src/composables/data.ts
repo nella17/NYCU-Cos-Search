@@ -42,11 +42,16 @@ export const useDataStore = defineStore('data', () => {
     }
 
     async function fetchData(path: string, body: Record<string, string> = {}) {
-        const key = `${path}?${new URLSearchParams(body).toString()}`
-        const saved = await chrome.storage.session.get(key)
-        if (saved[key]) return saved[key]
+        const key = `${path}?${digestMessage(body)}`
+        const saved = await chrome.storage.local.get(key)
+        if (saved[key]) {
+            const { time, data } = saved[key]
+            if (new Date().getTime() - new Date(time).getTime() < 24 * 60 * 60 * 1000) {
+                return data
+            }
+        }
         const data = await fetchDataNocache(path, body)
-        chrome.storage.session.set({ [key]: data })
+        chrome.storage.local.set({ [key]: { data, time: new Date().getTime() } })
         return data
     }
 
