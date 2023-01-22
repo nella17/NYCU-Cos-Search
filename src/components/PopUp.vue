@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { Course, CourseWrap } from '@/types'
+import { DepPath, CourseWrap } from '@/types'
 import Fuse from 'fuse.js'
+import { coursewrap2str, path2str } from '@/composables/utils'
 
 interface Props {
     visible?: boolean
@@ -23,8 +24,11 @@ function toggleVisible() {
 const dataStore = useDataStore()
 const { courses } = storeToRefs(dataStore)
 
-const select = ref<Course>()
-const search = ref<string>('')
+const selectCourse = ref<CourseWrap>()
+const paths = computed(
+    () => selectCourse.value?.paths.map((path) => ({ path })) ?? [],
+)
+const searchCourse = ref<string>('')
 const loading = ref(false)
 
 let fuse = new Fuse([] as CourseWrap[])
@@ -47,14 +51,29 @@ const courseItems = computed(() => {
     try {
         loading.value = true
         return fuse
-            .search(search.value)
-            .map(({ item }) => ({
-                value: `${item.course.cos_cname} (${item.course.cos_id})`,
-                ...item,
-            }))
+            .search(searchCourse.value)
+            .map(({ item }) => item)
             .slice(0, 100)
     } finally {
         loading.value = false
+    }
+})
+
+const selectPath = ref<{ path: DepPath }>()
+
+watch(selectPath, async (value) => {
+    if (value) {
+        await goDep(value.path)
+            .catch((err) => {
+                console.error(err)
+                alert(`Error when go to ${path2str(value)}`)
+            })
+        const list = document.querySelector('.course-list') as HTMLElement
+        for (const el of Array.from(list.children) as HTMLElement[]) {
+            if (el.innerText.indexOf(selectCourse.value?.course.cos_id ?? '') !== -1) {
+                el.classList.add('show')
+            }
+        }
     }
 })
 </script>
@@ -71,11 +90,24 @@ const courseItems = computed(() => {
                 autofocus
                 clearable
                 return-object
-                v-model="select"
-                v-model:search="search"
+                v-model="selectCourse"
+                v-model:search="searchCourse"
                 :loading="loading"
                 :items="courseItems"
-                item-title="value"
+                :item-title="coursewrap2str"
+                no-filter
+            />
+
+            <v-autocomplete
+                label="Search Path"
+                variant="underlined"
+                hide-no-data
+                hide-details
+                clearable
+                return-object
+                v-model="selectPath"
+                :items="paths"
+                :item-title="path2str"
             />
         </div>
     </v-container>

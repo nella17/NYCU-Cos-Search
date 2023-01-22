@@ -1,3 +1,13 @@
+import { DepPath, CourseWrap } from "@/types"
+
+export function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export function waitNextFrame() {
+    return new Promise((resolve) => requestAnimationFrame(resolve))
+}
+
 export function isUUID(str: string) {
     return /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/.test(
         str,
@@ -13,4 +23,35 @@ export async function digestMessage(message: any) {
         .map((b) => b.toString(16).padStart(2, '0'))
         .join('') // convert bytes to hex string
     return hashHex
+}
+
+export function coursewrap2str({ course }: CourseWrap) {
+    const { cos_id, cos_cname, cos_ename, cos_credit } = course
+    return `${cos_id} ${cos_cname} ${cos_ename} ${cos_credit}`
+}
+
+export function path2str({ path }: { path: DepPath } ) {
+    return path.map((d) => d.label).join('/')
+}
+
+export async function goDep(paths: DepPath) {
+    const picker = document.querySelector('.ant-cascader-picker-label') as HTMLElement
+    picker.click()
+    await waitNextFrame()
+    const menu = document.querySelector('.ant-cascader-menus') as HTMLElement
+    const div = menu.children[0] as HTMLElement
+    let r = 0
+    for (const { label } of paths) {
+        const el = div.children[r].querySelector(`[title="${label}"]`) as HTMLElement
+        el.click()
+        await waitNextFrame()
+        r += 1
+    }
+    while (div.children.length > r) {
+        const el = div.children[r].children[0] as HTMLElement
+        el.click()
+        await waitNextFrame()
+        r += 1
+    }
+    return true
 }
