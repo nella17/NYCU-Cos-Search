@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { Course } from '@/types'
+
 interface Props {
     visible?: boolean
 }
@@ -18,18 +20,52 @@ function toggleVisible() {
 }
 
 const dataStore = useDataStore()
+const { courses } = storeToRefs(dataStore)
 onMounted(() => {
     dataStore.setup()
 })
+
+const select = ref<Course>()
+const search = ref<string>('')
+watch(select, (value) => {
+    console.log('select', value)
+})
+
+const courseItems = computed(() =>
+    !search.value
+        ? []
+        : courses.value
+              .map(({ course, dep_uid }) => ({
+                  dep_uid,
+                  course,
+                  value: `${course.cos_cname} ${course.cos_time}`,
+              }))
+              .filter(
+                  ({ course }) =>
+                      JSON.stringify(course).indexOf(search.value) > -1,
+              )
+              .slice(0, 100),
+)
 </script>
 
 <template>
-    <div class="popup">
+    <v-container class="popup">
         <button class="close" @click.stop="toggleVisible">X</button>
         <div class="content">
-            Hello, Vite-Plugin-Chrome-Extension
+            <v-autocomplete
+                label="Search courses"
+                variant="underlined"
+                hide-no-data
+                autofocus
+                clearable
+                return-object
+                v-model="select"
+                v-model:search="search"
+                :items="courseItems"
+                item-title="value"
+            />
         </div>
-    </div>
+    </v-container>
 </template>
 
 <style scoped>
@@ -37,7 +73,7 @@ onMounted(() => {
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 1rem;
+    width: 400px;
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 1px 5px 0 rgb(0 0 0 / 50%);
@@ -59,6 +95,6 @@ onMounted(() => {
 .content {
     font-size: 1.5em;
     font-weight: 700;
-    color: deepskyblue;
+    color: rgba(0, 0, 0, 0.7);
 }
 </style>
