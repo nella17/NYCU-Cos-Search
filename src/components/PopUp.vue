@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { Course } from '@/types'
+import { Course, CourseWrap } from '@/types'
+import Fuse from 'fuse.js'
 
 interface Props {
     visible?: boolean
@@ -21,31 +22,41 @@ function toggleVisible() {
 
 const dataStore = useDataStore()
 const { courses } = storeToRefs(dataStore)
-onMounted(() => {
-    dataStore.setup()
-})
 
 const select = ref<Course>()
 const search = ref<string>('')
-watch(select, (value) => {
-    console.log('select', value)
+const loading = ref(false)
+
+let fuse = new Fuse([] as CourseWrap[])
+dataStore.setup().then(() => {
+    fuse = new Fuse(unref(courses), {
+        findAllMatches: true,
+        keys: [
+            'course.cos_cname',
+            'course.cos_ename',
+            'course.lecturers',
+            'course.cos_time',
+            'course.cos_id',
+            'course.master_dep_cname',
+            'course.master_dep_ename',
+        ],
+    })
 })
 
-const courseItems = computed(() =>
-    !search.value
-        ? []
-        : courses.value
-              .map(({ course, dep_uid }) => ({
-                  dep_uid,
-                  course,
-                  value: `${course.cos_cname} ${course.cos_time}`,
-              }))
-              .filter(
-                  ({ course }) =>
-                      JSON.stringify(course).indexOf(search.value) > -1,
-              )
-              .slice(0, 100),
-)
+const courseItems = computed(() => {
+    try {
+        loading.value = true
+        return fuse
+            .search(search.value)
+            .map(({ item }) => ({
+                value: `${item.course.cos_cname} (${item.course.cos_id})`,
+                ...item,
+            }))
+            .slice(0, 100)
+    } finally {
+        loading.value = false
+    }
+})
 </script>
 
 <template>
@@ -56,11 +67,13 @@ const courseItems = computed(() =>
                 label="Search courses"
                 variant="underlined"
                 hide-no-data
+                hide-details
                 autofocus
                 clearable
                 return-object
                 v-model="select"
                 v-model:search="search"
+                :loading="loading"
                 :items="courseItems"
                 item-title="value"
             />

@@ -4,6 +4,7 @@ specifiers:
   '@types/chrome': ^0.0.209
   '@types/node': ^18.11.18
   '@vitejs/plugin-vue': ^4.0.0
+  fuse.js: ^6.6.2
   pinia: ^2.0.29
   typescript: ^4.9.4
   unplugin-auto-import: ^0.12.1
@@ -19,6 +20,7 @@ devDependencies:
   '@types/chrome': 0.0.209
   '@types/node': 18.11.18
   '@vitejs/plugin-vue': 4.0.0_vite@4.0.4+vue@3.2.45
+  fuse.js: 6.6.2
   pinia: 2.0.29_prq2uz4lho2pwp6irk4cfkrxwu
   typescript: 4.9.4
   unplugin-auto-import: 0.12.1
@@ -1085,6 +1087,11 @@ packages:
 
   /function-bind/1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
+    dev: true
+
+  /fuse.js/6.6.2:
+    resolution: {integrity: sha512-cJaJkxCCxC8qIIcPBF9yGxY0W/tVZS3uEISDxhYIdtk8OL93pe+6Zj7LjCqVV4dzbqcriOZ+kQ/NE4RXZHsIGA==}
+    engines: {node: '>=10'}
     dev: true
 
   /glob-parent/5.1.2:
