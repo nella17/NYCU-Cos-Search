@@ -19,6 +19,10 @@ chrome.runtime.onMessage.addListener((message) => {
 </script>
 
 <template>
+    <link
+        href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css"
+        rel="stylesheet"
+    />
     <PopUp v-if="visible" v-model:visible="visible" />
     <Teleport to=".navbar-end">
         <a class="navbar-item" @click.prevent="toggleVisible">🔍</a>
