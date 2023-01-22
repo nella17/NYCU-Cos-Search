@@ -1,4 +1,4 @@
-import { Dep, DepPath, Course, CourseWrap } from '@/types'
+import { Dep, DepPath, Course, CourseWrap, CourseMap } from '@/types'
 
 export const useDataStore = defineStore('data', () => {
     let token = ''
@@ -58,46 +58,47 @@ export const useDataStore = defineStore('data', () => {
         return data
     }
 
-    const deps = ref<Dep[]>([])
-    const depMap = new Map<string, DepPath>()
+    let deps = ref<Dep[]>([])
+    let depPaths = ref<DepPath[]>([])
 
     async function get_dep() {
         const data = (await fetchData('/getdep')) as Dep[]
         deps.value = data
-        depMap.clear()
-        deps.value.forEach((dep) => parse_dep(dep))
+        depPaths.value = []
+        data.forEach((dep) => parse_dep(dep))
     }
 
     function parse_dep({ value, label, children }: Dep, path: DepPath = []) {
         path = [...path, { value, label }]
-        if (isUUID(value)) {
-            depMap.set(value, path)
-        }
-        if (children) {
-            children.forEach((child) => {
-                parse_dep(child, path)
-            })
+        if (!children || children.some((child) => child.value === '*')) {
+            depPaths.value.push(path)
+        } else {
+            children.forEach((child) => parse_dep(child, path))
         }
     }
 
-    const courses = ref<CourseWrap[]>([])
+    const courseMap = ref<CourseMap>(new Map())
+    const courses = computed(() => [...unref(courseMap).values()])
 
-    async function get_preregistcourse(dep_uid: string, dep_path: DepPath) {
-        if (!dep_uid) return
+    async function get_preregistcourse(dep_path: DepPath) {
         const data = (await fetchData('/preregistcourse', {
-            dep_uid,
             type: dep_path[0]?.value ?? '*',
             dep_category: dep_path[1]?.value ?? '*',
             college_no: dep_path[2]?.value ?? '*',
-            group: dep_path[3]?.value ?? '*',
-            grade: dep_path[4]?.value ?? '*',
-            class: dep_path[5]?.value ?? '*',
+            dep_uid: dep_path[3]?.value ?? '*',
+            group: dep_path[4]?.value ?? '*',
+            grade: dep_path[5]?.value ?? '*',
+            class: dep_path[6]?.value ?? '*',
         })) as Course[]
         data.forEach((course) => {
-            courses.value.push({
-                course,
-                dep_uid,
-            })
+            const { cos_id } = course
+            if (!courseMap.value.has(cos_id)) {
+                courseMap.value.set(cos_id, {
+                    course,
+                    paths: [],
+                })
+            }
+            courseMap.value.get(cos_id)!.paths.push(dep_path)
         })
     }
 
@@ -107,10 +108,10 @@ export const useDataStore = defineStore('data', () => {
             .then((res) => res.token)
         await fetchDataNocache('/sysstatuslvl')
         await get_dep()
-        const promises = []
-        for (const [dep_uid, dep_path] of depMap.entries())
-            promises.push(get_preregistcourse(dep_uid, dep_path))
-        await Promise.allSettled(promises).then((res) => {
+        courseMap.value.clear()
+        await Promise.allSettled(
+            depPaths.value.map((dep_path) => get_preregistcourse(dep_path)),
+        ).then((res) => {
             res.filter((p) => p.status !== 'fulfilled').forEach((p) => {
                 console.error('setup Promise.allSettled', p)
             })
@@ -119,7 +120,8 @@ export const useDataStore = defineStore('data', () => {
 
     return {
         deps,
-        depMap,
+        depPaths,
+        courseMap,
         courses,
         setup,
     }

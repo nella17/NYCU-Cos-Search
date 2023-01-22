@@ -55,5 +55,7 @@ export interface Course {
 
 export interface CourseWrap {
     course: Course
-    dep_uid: string
+    paths: DepPath[]
 }
+
+export type CourseMap = Map<string, CourseWrap>
