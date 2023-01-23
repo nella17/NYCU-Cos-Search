@@ -79,6 +79,7 @@ watch(pathSelect, async (value) => {
             console.error(err)
             alert(`Error when go to ${path2str(value)}`)
         })
+        await sleep(1000)
         const list = document.querySelector('.course-list') as HTMLElement
         for (const el of Array.from(list.children) as HTMLElement[]) {
             if (el.innerText.indexOf(cos_id) !== -1) {
