@@ -1,6 +1,9 @@
 {
     "manifest_version": 3,
     "name": "NYCU Cos Search",
+    "icons": {
+        "128": "icon.png"
+    },
     "permissions": [
         "webRequest",
         "storage",
