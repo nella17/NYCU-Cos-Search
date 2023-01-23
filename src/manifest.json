@@ -10,7 +10,10 @@
         "https://cos.nycu.edu.tw/*"
     ],
     "action": {
-        "default_title": "Vue Popup"
+        "default_title": "Toggle Search",
+        "default_icon": {
+            "128": "icon.png"
+        }
     },
     "background": {
         "matches": ["https://cos.nycu.edu.tw/*"],

@@ -8,6 +8,12 @@ chrome.action.onClicked.addListener((tab) => {
     }
 })
 
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'local' && changes.visible) {
+        chrome.action.setBadgeText({ text: changes.visible.newValue ? 'ON' : '' })
+    }
+})
+
 chrome.webRequest.onBeforeRequest.addListener(
     (details) => {
         if (token) return
