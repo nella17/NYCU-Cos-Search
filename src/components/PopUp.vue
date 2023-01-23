@@ -24,11 +24,11 @@ function toggleVisible() {
 const dataStore = useDataStore()
 const { courses } = storeToRefs(dataStore)
 
-const selectCourse = ref<CourseWrap>()
+const courseSelect = ref<CourseWrap>()
 const paths = computed(
-    () => selectCourse.value?.paths.map((path) => ({ path })) ?? [],
+    () => courseSelect.value?.paths.map((path) => ({ path })) ?? [],
 )
-const searchCourse = ref<string>('')
+const courseSearch = ref<string>('')
 const loading = ref(false)
 
 let fuse = new Fuse([] as CourseWrap[])
@@ -51,7 +51,7 @@ const courseItems = computed(() => {
     try {
         loading.value = true
         return fuse
-            .search(searchCourse.value)
+            .search(courseSearch.value)
             .map(({ item }) => item)
             .slice(0, 100)
     } finally {
@@ -59,10 +59,17 @@ const courseItems = computed(() => {
     }
 })
 
-const selectPath = ref<{ path: DepPath }>()
+const pathSelect = ref<{ path: DepPath }>()
+const pathManu = ref(false)
 
-watch(selectPath, async (value) => {
-    const { cos_id } = selectCourse.value?.course ?? {}
+watch(courseSelect, (value) => {
+    if (value) {
+        pathManu.value = true
+    }
+})
+
+watch(pathSelect, async (value) => {
+    const { cos_id } = courseSelect.value?.course ?? {}
     if (value && cos_id) {
         await goDep(value.path).catch((err) => {
             console.error(err)
@@ -90,9 +97,8 @@ watch(selectPath, async (value) => {
                 autofocus
                 clearable
                 return-object
-                v-model="selectCourse"
-                v-model:search="searchCourse"
-                :loading="loading"
+                v-model="courseSelect"
+                v-model:search="courseSearch"
                 :items="courseItems"
                 :item-title="coursewrap2str"
                 no-filter
@@ -105,7 +111,8 @@ watch(selectPath, async (value) => {
                 hide-details
                 clearable
                 return-object
-                v-model="selectPath"
+                v-model="pathSelect"
+                v-model:menu="pathManu"
                 :items="paths"
                 :item-title="path2str"
             />
