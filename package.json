@@ -1,6 +1,6 @@
 {
   "name": "nycu-cos-search",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Improve search on NYCU Cos.",
   "main": "index.js",
   "scripts": {
