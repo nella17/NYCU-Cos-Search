@@ -32,7 +32,9 @@ const courseSearch = ref<string>('')
 const loading = ref(false)
 
 let fuse = new Fuse([] as CourseWrap[])
-dataStore.setup().then(() => {
+nextTick(async () => {
+    loading.value = true
+    await dataStore.setup()
     fuse = new Fuse(unref(courses), {
         findAllMatches: true,
         keys: [
@@ -45,6 +47,7 @@ dataStore.setup().then(() => {
             'course.master_dep_ename',
         ],
     })
+    loading.value = false
 })
 
 const courseItems = computed(() => {
@@ -71,6 +74,7 @@ watch(courseSelect, (value) => {
 watch(pathSelect, async (value) => {
     const { cos_id } = courseSelect.value?.course ?? {}
     if (value && cos_id) {
+        loading.value = true
         await goDep(value.path).catch((err) => {
             console.error(err)
             alert(`Error when go to ${path2str(value)}`)
@@ -81,6 +85,7 @@ watch(pathSelect, async (value) => {
                 el.classList.add('show')
             }
         }
+        loading.value = false
     }
 })
 </script>
@@ -115,6 +120,14 @@ watch(pathSelect, async (value) => {
                 v-model:menu="pathManu"
                 :items="paths"
                 :item-title="path2str"
+            />
+
+            <v-progress-linear
+                v-show="loading"
+                indeterminate
+                rounded
+                height="5"
+                color="primary"
             />
         </div>
     </v-container>
