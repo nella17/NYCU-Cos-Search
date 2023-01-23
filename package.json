@@ -7,7 +7,7 @@
     "dev": "fswatch -o src | xargs -n1 -I{} pnpm run build:dev",
     "build:dev": "NODE_ENV=developmemnt vite build --mode developmemnt",
     "build": "vite build",
-    "pack": "pnpm run build && zip -j -r -9 pack/pack.zip dist"
+    "pack": "pnpm run build && zip -j -r -9 - dist > pack/pack.zip"
   },
   "repository": {
     "type": "git",
