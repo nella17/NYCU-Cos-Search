@@ -62,7 +62,7 @@ export const useDataStore = defineStore('data', () => {
     let depPaths = ref<DepPath[]>([])
 
     async function get_dep() {
-        const data = (await fetchData('/getdep')) as Dep[]
+        const data = (await fetchDataNocache('/getdep')) as Dep[]
         deps.value = data
         depPaths.value = []
         data.forEach((dep) => parse_dep(dep))
