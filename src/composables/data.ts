@@ -70,10 +70,15 @@ export const useDataStore = defineStore('data', () => {
 
     function parse_dep({ value, label, children }: Dep, path: DepPath = []) {
         path = [...path, { value, label }]
-        if (!children || children.some((child) => child.value === '*')) {
+        if (!children) {
             depPaths.value.push(path)
         } else {
-            children.forEach((child) => parse_dep(child, path))
+            const all = children.filter((child) => child.value === '*')
+            if (all.length) {
+                parse_dep(all[0], path)
+            } else {
+                children.forEach((child) => parse_dep(child, path))
+            }
         }
     }
 
@@ -82,13 +87,13 @@ export const useDataStore = defineStore('data', () => {
 
     async function get_preregistcourse(dep_path: DepPath) {
         const data = (await fetchData('/preregistcourse', {
-            type: dep_path[0]?.value ?? '*',
-            dep_category: dep_path[1]?.value ?? '*',
-            college_no: dep_path[2]?.value ?? '*',
-            dep_uid: dep_path[3]?.value ?? '*',
-            group: dep_path[4]?.value ?? '*',
-            grade: dep_path[5]?.value ?? '*',
-            class: dep_path[6]?.value ?? '*',
+            type: dep_path[0]?.value ?? '',
+            dep_category: dep_path[1]?.value ?? '',
+            college_no: dep_path[2]?.value ?? '',
+            dep_uid: dep_path[3]?.value ?? '',
+            group: dep_path[4]?.value ?? '',
+            grade: dep_path[5]?.value ?? '',
+            class: dep_path[6]?.value ?? '',
         })) as Course[]
         data.forEach((course) => {
             const { cos_id } = course
