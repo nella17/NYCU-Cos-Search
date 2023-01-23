@@ -62,15 +62,15 @@ const courseItems = computed(() => {
 const selectPath = ref<{ path: DepPath }>()
 
 watch(selectPath, async (value) => {
-    if (value) {
-        await goDep(value.path)
-            .catch((err) => {
-                console.error(err)
-                alert(`Error when go to ${path2str(value)}`)
-            })
+    const { cos_id } = selectCourse.value?.course ?? {}
+    if (value && cos_id) {
+        await goDep(value.path).catch((err) => {
+            console.error(err)
+            alert(`Error when go to ${path2str(value)}`)
+        })
         const list = document.querySelector('.course-list') as HTMLElement
         for (const el of Array.from(list.children) as HTMLElement[]) {
-            if (el.innerText.indexOf(selectCourse.value?.course.cos_id ?? '') !== -1) {
+            if (el.innerText.indexOf(cos_id) !== -1) {
                 el.classList.add('show')
             }
         }

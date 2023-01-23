@@ -1,4 +1,4 @@
-import { DepPath, CourseWrap } from "@/types"
+import { DepPath, CourseWrap } from '@/types'
 
 export function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
@@ -30,19 +30,23 @@ export function coursewrap2str({ course }: CourseWrap) {
     return `${cos_id} ${cos_cname} ${cos_ename} ${cos_credit}`
 }
 
-export function path2str({ path }: { path: DepPath } ) {
+export function path2str({ path }: { path: DepPath }) {
     return path.map((d) => d.label).join('/')
 }
 
 export async function goDep(paths: DepPath) {
-    const picker = document.querySelector('.ant-cascader-picker-label') as HTMLElement
+    const picker = document.querySelector(
+        '.ant-cascader-picker-label',
+    ) as HTMLElement
     picker.click()
     await waitNextFrame()
     const menu = document.querySelector('.ant-cascader-menus') as HTMLElement
     const div = menu.children[0] as HTMLElement
     let r = 0
     for (const { label } of paths) {
-        const el = div.children[r].querySelector(`[title="${label}"]`) as HTMLElement
+        const el = div.children[r].querySelector(
+            `[title="${label}"]`,
+        ) as HTMLElement
         el.click()
         await waitNextFrame()
         r += 1

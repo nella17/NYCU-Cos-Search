@@ -1,6 +1,8 @@
 let token = null as string | null
 
-chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' })
+chrome.storage.session.setAccessLevel({
+    accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
+})
 
 chrome.action.onClicked.addListener(async (tab) => {
     if (tab.id) {
@@ -20,7 +22,9 @@ chrome.action.onClicked.addListener(async (tab) => {
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName === 'local' && changes.visible) {
-        chrome.action.setBadgeText({ text: changes.visible.newValue ? 'ON' : '' })
+        chrome.action.setBadgeText({
+            text: changes.visible.newValue ? 'ON' : '',
+        })
     }
 })
 
