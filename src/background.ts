@@ -2,9 +2,19 @@ let token = null as string | null
 
 chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' })
 
-chrome.action.onClicked.addListener((tab) => {
+chrome.action.onClicked.addListener(async (tab) => {
     if (tab.id) {
-        chrome.tabs.sendMessage(tab.id, { toggleVisible: true })
+        const info = await chrome.tabs.get(tab.id)
+        if (info.url) {
+            const url = new URL(info.url)
+            if (url.hostname !== 'cos.nycu.edu.tw')
+                return
+            try {
+                await chrome.tabs.sendMessage(tab.id, { toggleVisible: true })
+            } catch (e) {
+                await chrome.tabs.reload(tab.id)
+            }
+        }
     }
 })
 
