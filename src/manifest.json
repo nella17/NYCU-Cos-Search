@@ -1,7 +1,6 @@
 {
     "manifest_version": 3,
     "name": "NYCU Cos Search",
-    "version": "1.0.0",
     "permissions": [
         "webRequest",
         "storage",

@@ -6,6 +6,8 @@ import Components from 'unplugin-vue-components/vite'
 import vuetify from 'vite-plugin-vuetify'
 import { chromeExtension } from 'vite-plugin-chrome-extension'
 
+import { description, version } from './package.json'
+
 // https://vitejs.dev/config/
 export default defineConfig({
     resolve: {
@@ -45,6 +47,11 @@ export default defineConfig({
             dts: './include/components.d.ts',
         }),
         vuetify(),
-        chromeExtension() as any,
+        chromeExtension({
+            extendManifest: {
+                version,
+                description,
+            },
+        }) as any,
     ],
 })

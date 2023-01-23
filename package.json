@@ -1,7 +1,7 @@
 {
   "name": "nycu-cos-search",
   "version": "1.0.0",
-  "description": "",
+  "description": "Improve search on NYCU Cos.",
   "main": "index.js",
   "scripts": {
     "dev": "fswatch -o src | xargs -n1 -I{} pnpm run build:dev",
