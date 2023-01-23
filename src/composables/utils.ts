@@ -43,19 +43,18 @@ export async function goDep(paths: DepPath) {
     const menu = document.querySelector('.ant-cascader-menus') as HTMLElement
     const div = menu.children[0] as HTMLElement
     let r = 0
-    for (const { label } of paths) {
-        const el = div.children[r].querySelector(
-            `[title="${label}"]`,
-        ) as HTMLElement
-        el.click()
-        await waitNextFrame()
-        r += 1
-    }
-    while (div.children.length > r) {
-        const el = div.children[r].children[0] as HTMLElement
-        el.click()
-        await waitNextFrame()
-        r += 1
+    for (const { value, label } of paths) {
+        const selector = value === '*' ? ':first-child' : `[title="${label}"]`
+        while (true) {
+            await waitNextFrame()
+            const cur = div.children[r] as HTMLElement
+            if (!cur) continue
+            const el = cur.querySelector(selector) as HTMLElement
+            if (!el) continue
+            el.click()
+            r += 1
+            break
+        }
     }
     return true
 }
