@@ -1,17 +1,13 @@
 <script lang="ts" setup>
 const visible = ref(false)
 
-chrome.storage.local.get('visible').then((result) => {
-    visible.value = result.visible
-})
-
 function toggleVisible() {
     visible.value = !visible.value
 }
 
 watch(visible, (value) => {
     chrome.storage.local.set({ visible: value })
-})
+}, { immediate: true })
 
 chrome.runtime.onMessage.addListener((message) => {
     if (message.toggleVisible) toggleVisible()
