@@ -1,4 +1,7 @@
+const HOSTNAME = 'cos.nycu.edu.tw'
+
 let token = null as string | null
+let currentTabId = null as number | null
 
 chrome.storage.session.setAccessLevel({
     accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
@@ -9,9 +12,11 @@ chrome.action.onClicked.addListener(async (tab) => {
         const info = await chrome.tabs.get(tab.id)
         if (info.url) {
             const url = new URL(info.url)
-            if (url.hostname !== 'cos.nycu.edu.tw') return
+            if (url.hostname !== HOSTNAME) return
             try {
-                await chrome.tabs.sendMessage(tab.id, { toggleVisibility: true })
+                await chrome.tabs.sendMessage(tab.id, {
+                    toggleVisibility: true,
+                })
             } catch (e) {
                 await chrome.tabs.reload(tab.id)
             }
@@ -29,21 +34,31 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 
 chrome.webRequest.onBeforeRequest.addListener(
     (details) => {
+        if (details.tabId !== currentTabId) return
         if (token) return
         const data = details.requestBody?.formData
         if (data && data.token && data.token[0]) {
             token = data.token[0]
         }
     },
-    {
-        urls: ['https://cos.nycu.edu.tw/*'],
-    },
+    { urls: [`https://${HOSTNAME}/*`] },
     ['requestBody'],
 )
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'getToken') {
-        sendResponse({ token })
+const WebNavigationEventFilter = {
+    url: [{ hostEquals: HOSTNAME }],
+}
+
+chrome.webNavigation.onCompleted.addListener((details) => {
+    if (details.frameId === 0) {
+        currentTabId = -1
+        chrome.tabs.sendMessage(details.tabId, { token })
         token = null
     }
-})
+}, WebNavigationEventFilter)
+
+chrome.webNavigation.onBeforeNavigate.addListener((details) => {
+    if (details.frameId === 0) {
+        currentTabId = details.tabId
+    }
+}, WebNavigationEventFilter)

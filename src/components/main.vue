@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 const visible = ref(false)
+const dataStore = useDataStore()
 
 function toggleVisibility() {
     visible.value = !visible.value
@@ -15,6 +16,7 @@ watch(
 
 chrome.runtime.onMessage.addListener((message) => {
     if (message.toggleVisibility) toggleVisibility()
+    if (message.token) dataStore.setToken(message.token)
 })
 </script>
 

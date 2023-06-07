@@ -6,9 +6,6 @@ export const useDataStore = defineStore('data', () => {
     function checkToken() {
         if (!token) {
             chrome.storage.local.set({ visible: false })
-            if (confirm('Token not found, reload page?')) {
-                location.reload()
-            }
             throw new Error('No token')
         }
     }
@@ -115,9 +112,6 @@ export const useDataStore = defineStore('data', () => {
     }
 
     async function setup() {
-        token = await chrome.runtime
-            .sendMessage({ action: 'getToken' })
-            .then((res) => res.token)
         await fetchDataNocache('/sysstatuslvl')
         await get_dep()
         courseMap.value.clear()
@@ -126,8 +120,13 @@ export const useDataStore = defineStore('data', () => {
         ).then((res) => {
             res.filter((p) => p.status !== 'fulfilled').forEach((p) => {
                 console.error('setup Promise.allSettled', p)
+                throw "setup failed"
             })
         })
+    }
+
+    function setToken(newToken: string) {
+        if (!token) token = newToken
     }
 
     return {
@@ -136,5 +135,6 @@ export const useDataStore = defineStore('data', () => {
         courseMap,
         courses,
         setup,
+        setToken,
     }
 })

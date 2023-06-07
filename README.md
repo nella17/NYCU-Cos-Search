@@ -4,4 +4,3 @@
 
 - show error message
 - clear cache
-- fix token
