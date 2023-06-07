@@ -5,9 +5,13 @@ function toggleVisible() {
     visible.value = !visible.value
 }
 
-watch(visible, (value) => {
-    chrome.storage.local.set({ visible: value })
-}, { immediate: true })
+watch(
+    visible,
+    (value) => {
+        chrome.storage.local.set({ visible: value })
+    },
+    { immediate: true },
+)
 
 chrome.runtime.onMessage.addListener((message) => {
     if (message.toggleVisible) toggleVisible()
@@ -41,7 +45,6 @@ body:has(#cos-search) .sidebar > .course-list > .course:not(.show) {
     z-index: 9999;
 }
 </style>
-
 
 <style scoped>
 .toggle-visible {

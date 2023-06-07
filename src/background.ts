@@ -9,8 +9,7 @@ chrome.action.onClicked.addListener(async (tab) => {
         const info = await chrome.tabs.get(tab.id)
         if (info.url) {
             const url = new URL(info.url)
-            if (url.hostname !== 'cos.nycu.edu.tw')
-                return
+            if (url.hostname !== 'cos.nycu.edu.tw') return
             try {
                 await chrome.tabs.sendMessage(tab.id, { toggleVisible: true })
             } catch (e) {
