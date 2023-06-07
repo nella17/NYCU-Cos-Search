@@ -35,7 +35,9 @@ export function path2str({ path }: { path: DepPath }) {
 }
 
 export async function goDep(path: DepPath) {
-    const label = document.querySelector('.ant-cascader-picker-label') as HTMLElement
+    const label = document.querySelector(
+        '.ant-cascader-picker-label',
+    ) as HTMLElement
     if (label.innerText === path2str({ path })) return false
 
     const picker = document.querySelector(
@@ -62,7 +64,10 @@ export async function goDep(path: DepPath) {
     return true
 }
 
-export async function waitDomChanged(target: Node, options: MutationObserverInit) {
+export async function waitDomChanged(
+    target: Node,
+    options: MutationObserverInit,
+) {
     return new Promise((resolve) => {
         const observer = new MutationObserver((mutation) => {
             observer.disconnect()

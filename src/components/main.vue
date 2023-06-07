@@ -44,7 +44,7 @@ const showSnackbar = computed({
     <PopUp
         v-if="visible"
         v-model:visible="visible"
-        @snackbar="o => snackbars.push(o)"
+        @snackbar="(o) => snackbars.push(o)"
         id="cos-search"
         class="fixed-top"
     />
@@ -55,10 +55,7 @@ const showSnackbar = computed({
         @click.prevent="toggleVisibility"
     />
 
-    <v-snackbar
-        v-model="showSnackbar"
-        v-bind="snackbar?.attrs"
-    >
+    <v-snackbar v-model="showSnackbar" v-bind="snackbar?.attrs">
         {{ snackbar.message }}
         <template v-slot:actions>
             <v-btn

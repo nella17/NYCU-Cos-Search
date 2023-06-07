@@ -84,7 +84,7 @@ nextTick(async () => {
             'course.category_ename',
             'course.GroupName',
             'course.GroupName_E',
-            'pathstrs'
+            'pathstrs',
         ],
     })
     loading.value--

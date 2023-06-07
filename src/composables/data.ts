@@ -84,7 +84,9 @@ export const useDataStore = defineStore('data', () => {
         [...unref(courseMap).values()].map(({ course, paths }) => ({
             course,
             paths,
-            pathstrs: Array.from(new Set(paths.flat().map(dep => dep.label)).keys()).join(),
+            pathstrs: Array.from(
+                new Set(paths.flat().map((dep) => dep.label)).keys(),
+            ).join(),
         })),
     )
 
