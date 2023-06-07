@@ -5,4 +5,3 @@
 - show error message
 - clear cache
 - fix token
-- fix loading count

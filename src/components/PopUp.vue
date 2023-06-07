@@ -29,11 +29,11 @@ const paths = computed(
     () => courseSelect.value?.paths.map((path) => ({ path })) ?? [],
 )
 const courseSearch = ref<string>('')
-const loading = ref(false)
+const loading = ref(0)
 
 let fuse = new Fuse([] as CourseWrap[])
 nextTick(async () => {
-    loading.value = true
+    loading.value++
     await dataStore.setup()
     fuse = new Fuse(unref(courses), {
         findAllMatches: true,
@@ -47,18 +47,18 @@ nextTick(async () => {
             'course.master_dep_ename',
         ],
     })
-    loading.value = false
+    loading.value--
 })
 
 const courseItems = computed(() => {
     try {
-        loading.value = true
+        loading.value++
         return fuse
             .search(courseSearch.value)
             .map(({ item }) => item)
             .slice(0, 100)
     } finally {
-        loading.value = false
+        loading.value--
     }
 })
 
@@ -74,7 +74,8 @@ watch(courseSelect, (value) => {
 watch(pathSelect, async (value) => {
     const { cos_id } = courseSelect.value?.course ?? {}
     if (value && cos_id) {
-        loading.value = true
+        loading.value++
+
         const changeDep = await goDep(value.path).catch((err) => {
             console.error(err)
             alert(`Error when go to ${path2str(value)}`)
@@ -82,18 +83,19 @@ watch(pathSelect, async (value) => {
         const courseList = document.querySelector('.course-list') as HTMLElement
 
         if (changeDep) await waitDomChanged(courseList, { childList: true })
-        if (pathSelect.value !== value) return
-
-        for (const el of Array.from(courseList.children) as HTMLElement[]) {
-            if (el.innerText.indexOf(cos_id) !== -1) {
-                courseList.scroll({
-                    top: el.offsetTop - courseList.offsetTop,
-                    behavior: 'smooth',
-                })
-                break
+        if (pathSelect.value === value) {
+            for (const el of Array.from(courseList.children) as HTMLElement[]) {
+                if (el.innerText.indexOf(cos_id) !== -1) {
+                    courseList.scroll({
+                        top: el.offsetTop - courseList.offsetTop,
+                        behavior: 'smooth',
+                    })
+                    break
+                }
             }
         }
-        loading.value = false
+
+        loading.value--
     }
 })
 </script>
@@ -112,7 +114,7 @@ watch(pathSelect, async (value) => {
                 return-object
                 v-model="courseSelect"
                 v-model:search="courseSearch"
-                :disabled="loading"
+                :disabled="loading > 0"
                 :items="courseItems"
                 :item-title="coursewrap2str"
                 no-filter
@@ -133,7 +135,7 @@ watch(pathSelect, async (value) => {
             />
 
             <v-progress-linear
-                v-show="loading"
+                v-show="loading > 0"
                 indeterminate
                 rounded
                 height="5"
