@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { DepPath, CourseWrap, SnackBar } from '@/types'
 import Fuse from 'fuse.js'
-import { coursewrap2str, path2str } from '@/composables/utils'
+import {
+    coursewrap2title,
+    coursewrap2subtitle,
+    path2str,
+} from '@/composables/utils'
 
 interface Props {
     visible?: boolean
@@ -157,9 +161,16 @@ watch(pathSelect, async (value) => {
                 v-model:search="courseSearch"
                 :disabled="!initialized"
                 :items="courseItems"
-                :item-title="coursewrap2str"
+                :item-title="coursewrap2title"
                 no-filter
-            />
+            >
+                <template v-slot:item="{ props, item }">
+                    <v-list-item
+                        v-bind="props"
+                        :subtitle="coursewrap2subtitle(item.raw)"
+                    />
+                </template>
+            </v-autocomplete>
 
             <v-autocomplete
                 label="Search Path"
