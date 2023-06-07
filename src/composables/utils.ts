@@ -25,21 +25,15 @@ export async function digestMessage(message: any) {
     return hashHex
 }
 
-export function coursewrap2title({ course }: CourseWrap) {
-    const { cos_id, cos_cname, cos_ename } = course
+export function coursewrap2title({
+    course: { cos_id, cos_cname, cos_ename },
+}: CourseWrap) {
     return `${cos_id} ${cos_cname} ${cos_ename}`
 }
 
-export function coursewrap2subtitle({ course }: CourseWrap) {
-    const {
-        master_dep_cname,
-        lecturers,
-        cos_hours,
-        cos_credit,
-        num_limit,
-        registered_num,
-    } = course
-    return `${master_dep_cname} ${lecturers} (${cos_credit} / ${cos_hours}) ${registered_num} / ${num_limit}`
+export function limitStr(str: string, limit_front: number, limit_back: number = 0) {
+    if (str.length <= limit_front + limit_back) return str
+    return str.slice(0, limit_front) + ' ... ' + str.slice(-limit_back)
 }
 
 export function path2str({ path }: { path: DepPath }) {

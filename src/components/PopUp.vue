@@ -3,7 +3,7 @@ import { DepPath, CourseWrap, SnackBar } from '@/types'
 import Fuse from 'fuse.js'
 import {
     coursewrap2title,
-    coursewrap2subtitle,
+    limitStr,
     path2str,
 } from '@/composables/utils'
 
@@ -164,11 +164,18 @@ watch(pathSelect, async (value) => {
                 :item-title="coursewrap2title"
                 no-filter
             >
-                <template v-slot:item="{ props, item }">
-                    <v-list-item
-                        v-bind="props"
-                        :subtitle="coursewrap2subtitle(item.raw)"
-                    />
+                <template v-slot:item="{ props, item: { raw: { course } } }">
+                    <v-list-item v-bind="props" lines="two">
+                        <v-list-item-subtitle>
+                            {{ course.master_dep_cname }}
+                            {{ limitStr(course.lecturers, 5, 5) }}
+                            {{ course.registered_num }} / {{ course.num_limit }}
+                            ({{ course.cos_credit }} / {{ course.cos_hours }})
+                            {{ course.cos_time }}
+                            <br>
+                            {{ limitStr(course.memo, 30, 20) }}
+                        </v-list-item-subtitle>
+                    </v-list-item>
                 </template>
             </v-autocomplete>
 
