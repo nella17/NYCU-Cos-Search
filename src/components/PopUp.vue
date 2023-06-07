@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>()
 
-function toggleVisible() {
+function toggleVisibility() {
     emit('update:visible', !props.visible)
 }
 
@@ -93,7 +93,7 @@ watch(pathSelect, async (value) => {
 
 <template>
     <v-container class="popup">
-        <button class="close" @click.stop="toggleVisible">X</button>
+        <button class="close" @click.stop="toggleVisibility">X</button>
         <div class="content">
             <v-autocomplete
                 label="Search courses"

@@ -11,7 +11,7 @@ chrome.action.onClicked.addListener(async (tab) => {
             const url = new URL(info.url)
             if (url.hostname !== 'cos.nycu.edu.tw') return
             try {
-                await chrome.tabs.sendMessage(tab.id, { toggleVisible: true })
+                await chrome.tabs.sendMessage(tab.id, { toggleVisibility: true })
             } catch (e) {
                 await chrome.tabs.reload(tab.id)
             }

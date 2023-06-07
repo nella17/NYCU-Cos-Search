@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const visible = ref(false)
 
-function toggleVisible() {
+function toggleVisibility() {
     visible.value = !visible.value
 }
 
@@ -14,7 +14,7 @@ watch(
 )
 
 chrome.runtime.onMessage.addListener((message) => {
-    if (message.toggleVisible) toggleVisible()
+    if (message.toggleVisibility) toggleVisibility()
 })
 </script>
 
@@ -30,9 +30,9 @@ chrome.runtime.onMessage.addListener((message) => {
         class="fixed-top"
     />
     <v-btn
-        class="fixed-top toggle-visible"
+        class="fixed-top toggle-visibility"
         icon="mdi-magnify"
-        @click.prevent="toggleVisible"
+        @click.prevent="toggleVisibility"
     />
 </template>
 
@@ -47,7 +47,7 @@ body:has(#cos-search) .sidebar > .course-list > .course:not(.show) {
 </style>
 
 <style scoped>
-.toggle-visible {
+.toggle-visibility {
     bottom: 20px;
     right: 20px;
 }
