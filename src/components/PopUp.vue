@@ -75,15 +75,22 @@ watch(pathSelect, async (value) => {
     const { cos_id } = courseSelect.value?.course ?? {}
     if (value && cos_id) {
         loading.value = true
-        await goDep(value.path).catch((err) => {
+        const changeDep = await goDep(value.path).catch((err) => {
             console.error(err)
             alert(`Error when go to ${path2str(value)}`)
         })
-        await sleep(1000)
-        const list = document.querySelector('.course-list') as HTMLElement
-        for (const el of Array.from(list.children) as HTMLElement[]) {
+        const courseList = document.querySelector('.course-list') as HTMLElement
+
+        if (changeDep) await waitDomChanged(courseList, { childList: true })
+        if (pathSelect.value !== value) return
+
+        for (const el of Array.from(courseList.children) as HTMLElement[]) {
             if (el.innerText.indexOf(cos_id) !== -1) {
-                el.classList.add('show')
+                courseList.scroll({
+                    top: el.offsetTop - courseList.offsetTop,
+                    behavior: 'smooth',
+                })
+                break
             }
         }
         loading.value = false
@@ -105,6 +112,7 @@ watch(pathSelect, async (value) => {
                 return-object
                 v-model="courseSelect"
                 v-model:search="courseSearch"
+                :disabled="loading"
                 :items="courseItems"
                 :item-title="coursewrap2str"
                 no-filter
@@ -119,6 +127,7 @@ watch(pathSelect, async (value) => {
                 return-object
                 v-model="pathSelect"
                 v-model:menu="pathManu"
+                :disabled="!courseSelect"
                 :items="paths"
                 :item-title="path2str"
             />

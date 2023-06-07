@@ -31,10 +31,13 @@ export function coursewrap2str({ course }: CourseWrap) {
 }
 
 export function path2str({ path }: { path: DepPath }) {
-    return path.map((d) => d.label).join('/')
+    return path.map((d) => d.label).join(' / ')
 }
 
-export async function goDep(paths: DepPath) {
+export async function goDep(path: DepPath) {
+    const label = document.querySelector('.ant-cascader-picker-label') as HTMLElement
+    if (label.innerText === path2str({ path })) return false
+
     const picker = document.querySelector(
         '.ant-cascader-picker-label',
     ) as HTMLElement
@@ -43,7 +46,7 @@ export async function goDep(paths: DepPath) {
     const menu = document.querySelector('.ant-cascader-menus') as HTMLElement
     const div = menu.children[0] as HTMLElement
     let r = 0
-    for (const { value, label } of paths) {
+    for (const { value, label } of path) {
         const selector = value === '*' ? ':first-child' : `[title="${label}"]`
         while (true) {
             await waitNextFrame()
@@ -57,4 +60,14 @@ export async function goDep(paths: DepPath) {
         }
     }
     return true
+}
+
+export async function waitDomChanged(target: Node, options: MutationObserverInit) {
+    return new Promise((resolve) => {
+        const observer = new MutationObserver((mutation) => {
+            observer.disconnect()
+            resolve(mutation)
+        })
+        observer.observe(target, options)
+    })
 }

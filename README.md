@@ -4,6 +4,5 @@
 
 - show error message
 - clear cache
-- wait fetch done
 - fix token
 - fix loading count

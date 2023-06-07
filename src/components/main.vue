@@ -37,12 +37,9 @@ chrome.runtime.onMessage.addListener((message) => {
 </template>
 
 <style>
-body:has(#cos-search) .sidebar > .course-list > .course:not(.show) {
-    display: none !important;
-}
 .fixed-top {
     position: fixed;
-    z-index: 9999;
+    z-index: 1500;
 }
 </style>
 
