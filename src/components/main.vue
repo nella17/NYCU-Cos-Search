@@ -19,14 +19,33 @@ chrome.runtime.onMessage.addListener((message) => {
         href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css"
         rel="stylesheet"
     />
-    <PopUp v-if="visible" v-model:visible="visible" id="cos-search" />
-    <Teleport to=".navbar-end">
-        <a class="navbar-item" @click.prevent="toggleVisible">🔍</a>
-    </Teleport>
+    <PopUp
+        v-if="visible"
+        v-model:visible="visible"
+        id="cos-search"
+        class="fixed-top"
+    />
+    <v-btn
+        class="fixed-top toggle-visible"
+        icon="mdi-magnify"
+        @click.prevent="toggleVisible"
+    />
 </template>
 
 <style>
 body:has(#cos-search) .sidebar > .course-list > .course:not(.show) {
     display: none !important;
+}
+.fixed-top {
+    position: fixed;
+    z-index: 9999;
+}
+</style>
+
+
+<style scoped>
+.toggle-visible {
+    bottom: 20px;
+    right: 20px;
 }
 </style>

@@ -136,14 +136,12 @@ watch(pathSelect, async (value) => {
 
 <style scoped>
 .popup {
-    position: fixed;
     top: 20px;
     right: 20px;
     width: 400px;
     border-radius: 8px;
     background-color: rgba(255, 255, 255, 0.95);
     box-shadow: 0 1px 5px 0 rgb(0 0 0 / 50%);
-    z-index: 999;
 }
 .close {
     position: absolute;
