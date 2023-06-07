@@ -83,7 +83,13 @@ export const useDataStore = defineStore('data', () => {
     }
 
     const courseMap = ref<CourseMap>(new Map())
-    const courses = computed(() => [...unref(courseMap).values()])
+    const courses = computed(() =>
+        [...unref(courseMap).values()].map(({ course, paths }) => ({
+            course,
+            paths,
+            pathstrs: Array.from(new Set(paths.flat().map(dep => dep.label)).keys()).join(),
+        })),
+    )
 
     async function get_preregistcourse(dep_path: DepPath) {
         const data = (await fetchData('/preregistcourse', {
@@ -103,7 +109,8 @@ export const useDataStore = defineStore('data', () => {
                     paths: [],
                 })
             }
-            courseMap.value.get(cos_id)!.paths.push(dep_path)
+            const item = courseMap.value.get(cos_id)!
+            item.paths.push(dep_path)
         })
     }
 

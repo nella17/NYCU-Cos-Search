@@ -46,6 +46,14 @@ nextTick(async () => {
             'course.cos_id',
             'course.master_dep_cname',
             'course.master_dep_ename',
+            'course.brief',
+            'course.wType_cname',
+            'course.wType_ename',
+            'course.category_cname',
+            'course.category_ename',
+            'course.GroupName',
+            'course.GroupName_E',
+            'pathstrs'
         ],
     })
     loading.value--
