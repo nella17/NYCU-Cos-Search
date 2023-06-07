@@ -29,6 +29,7 @@ const paths = computed(
     () => courseSelect.value?.paths.map((path) => ({ path })) ?? [],
 )
 const courseSearch = ref<string>('')
+const initialized = ref(false)
 const loading = ref(0)
 
 let fuse = new Fuse([] as CourseWrap[])
@@ -48,6 +49,7 @@ nextTick(async () => {
         ],
     })
     loading.value--
+    initialized.value = true
 })
 
 const courseItems = computed(() => {
@@ -114,7 +116,7 @@ watch(pathSelect, async (value) => {
                 return-object
                 v-model="courseSelect"
                 v-model:search="courseSearch"
-                :disabled="loading > 0"
+                :disabled="!initialized"
                 :items="courseItems"
                 :item-title="coursewrap2str"
                 no-filter
@@ -141,6 +143,10 @@ watch(pathSelect, async (value) => {
                 height="5"
                 color="primary"
             />
+
+            <span v-if="!initialized" class="text-caption">
+                Loading course data...
+            </span>
         </div>
     </v-container>
 </template>
