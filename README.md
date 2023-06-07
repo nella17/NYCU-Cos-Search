@@ -2,5 +2,4 @@
 
 ## TODO
 
-- show error message
 - clear cache

@@ -26,13 +26,13 @@ export const useDataStore = defineStore('data', () => {
                 if (resp.status === 200) {
                     return resp.json()
                 }
-                throw new Error(`${resp.status} (${resp.statusText})`)
+                throw `${resp.status} (${resp.statusText})`
             })
-            .catch((err) => {
-                console.error('getData', err)
-                // TODO: show error message in popup
-                // alert(`getData ${path}: ${err.message}`)
-                throw err
+            .catch((error) => {
+                throw {
+                    message: `getData ${path}: ${error.message}`,
+                    error,
+                }
             })
     }
 
@@ -119,8 +119,7 @@ export const useDataStore = defineStore('data', () => {
             depPaths.value.map((dep_path) => get_preregistcourse(dep_path)),
         ).then((res) => {
             res.filter((p) => p.status !== 'fulfilled').forEach((p) => {
-                console.error('setup Promise.allSettled', p)
-                throw "setup failed"
+                throw `setup failed: ${p}`
             })
         })
     }

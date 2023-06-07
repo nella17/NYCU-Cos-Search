@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DepPath, CourseWrap } from '@/types'
+import { DepPath, CourseWrap, SnackBar } from '@/types'
 import Fuse from 'fuse.js'
 import { coursewrap2str, path2str } from '@/composables/utils'
 
@@ -9,6 +9,7 @@ interface Props {
 
 interface Emits {
     (event: 'update:visible', value: boolean): void
+    (event: 'snackbar', snackbar: SnackBar): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -19,6 +20,36 @@ const emit = defineEmits<Emits>()
 
 function toggleVisibility() {
     emit('update:visible', !props.visible)
+}
+
+function showError(error: any) {
+    console.error(error)
+    emit('snackbar', {
+        message: error.message ?? error.toString(),
+        attrs: {
+            timeout: -1,
+        },
+        actions: [
+            {
+                label: 'Reload',
+                attrs: {
+                    color: 'deep-orange-lighten-3',
+                },
+                onClick() {
+                    location.reload()
+                },
+            },
+            {
+                label: 'Close',
+                attrs: {
+                    color: 'white',
+                },
+                onClick(close) {
+                    close()
+                },
+            },
+        ],
+    })
 }
 
 const dataStore = useDataStore()
@@ -35,7 +66,7 @@ const loading = ref(0)
 let fuse = new Fuse([] as CourseWrap[])
 nextTick(async () => {
     loading.value++
-    await dataStore.setup()
+    await dataStore.setup().catch(showError)
     fuse = new Fuse(unref(courses), {
         findAllMatches: true,
         keys: [
@@ -86,9 +117,9 @@ watch(pathSelect, async (value) => {
     if (value && cos_id) {
         loading.value++
 
-        const changeDep = await goDep(value.path).catch((err) => {
-            console.error(err)
-            alert(`Error when go to ${path2str(value)}`)
+        const changeDep = await goDep(value.path).catch((error) => {
+            console.error(error)
+            showError(`Error when go to ${path2str(value)}`)
         })
         const courseList = document.querySelector('.course-list') as HTMLElement
 

@@ -59,3 +59,15 @@ export interface CourseWrap {
 }
 
 export type CourseMap = Map<string, CourseWrap>
+
+export interface Button {
+    label: string
+    onClick: (close: () => void) => void
+    attrs?: Record<string, any>
+}
+
+export interface SnackBar {
+    message: string
+    actions?: Button[]
+    attrs?: Record<string, any>
+}
